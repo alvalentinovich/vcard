@@ -1,0 +1,39 @@
+{% extends 'resume/resume_base.html' %}
+
+{% block content %}
+    <div class="resume">
+        {% if resume.published_date %}
+            <div class="date">
+                {{ resume.published_date }}
+            </div>
+        {% else %}
+            <a class="btn btn-default" href="{% url 'resume_publish' pk=resume.pk %}">Publish</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+            <a class="btn btn-default" href="{% url 'resume_edit' pk=resume.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+            <a class="btn btn-default" href="{% url 'resume_remove' pk=resume.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+        {% endif %}
+        <h1>{{ resume.title }}</h1>
+        <p>{{ resume.text|linebreaksbr }}</p>
+    </div>
+
+<hr>
+<a class="btn btn-default" href="{% url 'add_offer_to_resume' pk=resume.pk %}">Add gob offer</a>
+{% for offer in resume.offers.all %}
+    {% if user.is_authenticated or offer.approved_offer %}
+    <div class="offer">
+        <div class="date">
+            {{ offer.created_date }}
+            {% if not offer.approved_offer %}
+                <a class="btn btn-default" href="{% url 'offer_remove' pk=offer.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+                <a class="btn btn-default" href="{% url 'offer_approve' pk=offer.pk %}"><span class="glyphicon glyphicon-ok"></span></a>
+            {% endif %}
+        </div>
+        <strong>{{ offer.author }}</strong>
+        <p>{{ offer.text|linebreaks }}</p>
+    </div>
+    {% endif %}
+{% empty %}
+    <p>No offers here yet :(</p>
+{% endfor %}
+{% endblock %}
