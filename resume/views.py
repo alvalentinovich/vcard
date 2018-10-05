@@ -96,7 +96,7 @@ def resume_new(request):
         if form.is_valid():
             resume = form.save(commit=False)
             resume.save()
-            return redirect('resume_detail', pk=post.pk)
+            return redirect('resume_detail', pk=resume.pk)
     else:
         form = ResumeForm()
     return render(request, 'resume/resume_edit.html', {'form': form})
